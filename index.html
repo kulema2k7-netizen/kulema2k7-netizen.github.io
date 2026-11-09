@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мастер Glass</title>
+<meta name="description" content="Настройка Smart TV и приставок в Перми. Удобный главный экран Glass, радио Glass Радио.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@200;300;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap">
+<meta property="og:title" content="Мастер Glass — настройка Smart TV в Перми">
+<meta property="og:description" content="Настрою телевизор или приставку и поставлю красивый главный экран Glass. От 1500 ₽, выезд по Перми бесплатно.">
+<meta property="og:image" content="img/tv-home.jpg">
+<style>
+/* Layout: one long night-sky page; every block is a pane of frosted glass floating over the Glass "Аврора" wallpaper. */
+:root{
+  --ink:#0b1026;          /* deep night base */
+  --violet:#402e86;       /* Glass wallpaper top-left */
+  --teal:#0b2136;         /* Glass wallpaper bottom-right */
+  --rose:#742857;         /* aurora glow */
+  --sky:#7dd3fc;          /* Glass accent pill */
+  --amber:#ffb547;        /* Glass Радио accent */
+  --fg:#f4f5ff;
+  --fg-2:rgba(244,245,255,.72);
+  --fg-3:rgba(244,245,255,.5);
+  --glass:rgba(255,255,255,.075);
+  --glass-2:rgba(255,255,255,.13);
+  --stroke:rgba(255,255,255,.16);
+  --display:"Onest","Segoe UI",Roboto,system-ui,sans-serif;
+  --body:"Manrope","Segoe UI",Roboto,system-ui,sans-serif;
+  --r-l:28px; --r-m:20px; --r-s:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--ink);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6;
+  background-image:
+    radial-gradient(60vw 50vw at 0% 0%, rgba(64,46,134,.95), transparent 70%),
+    radial-gradient(45vw 40vw at 100% 18%, rgba(116,40,87,.55), transparent 70%),
+    radial-gradient(60vw 50vw at 100% 100%, rgba(11,33,54,1), transparent 70%),
+    radial-gradient(50vw 40vw at 0% 70%, rgba(40,30,110,.6), transparent 70%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px, env(safe-area-inset-left,0px));padding-right:max(20px, env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.12;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(34px,5.4vw,60px);font-weight:800}
+h2{font-size:clamp(28px,3.6vw,40px);font-weight:700}
+h3{font-size:20px;font-weight:600}
+p{margin:0}
+a{color:inherit}
+.eyebrow{font-family:var(--display);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--sky)}
+.lead{font-size:clamp(17px,1.6vw,20px);color:var(--fg-2);max-width:56ch}
+.pane{background:var(--glass);border:1px solid var(--stroke);border-radius:var(--r-l);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 20px 50px rgba(0,0,0,.25)}
+
+/* Top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;padding-block:14px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--ink)}
+.bar{display:flex;align-items:center;gap:16px;padding:10px 12px 10px 14px;border-radius:999px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-weight:700;font-size:18px;white-space:nowrap}
+.mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(150deg,#3b4f9a,#1d3a78);display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:7px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.mark i{border-radius:3px;background:#fff}.mark i:nth-child(2),.mark i:nth-child(3){background:rgba(255,255,255,.7)}
+.nav{display:flex;gap:4px;margin-left:auto}
+.nav a{text-decoration:none;color:var(--fg-2);font-size:15px;font-weight:600;padding:8px 14px;border-radius:999px;transition:background .2s,color .2s}
+.nav a:hover,.nav a:focus-visible{background:var(--glass-2);color:var(--fg)}
+@media (max-width:860px){.nav{display:none}.bar .btn{margin-left:auto}}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;justify-content:center;text-decoration:none;font-family:var(--display);font-weight:600;font-size:16px;
+  padding:13px 22px;border-radius:999px;border:1px solid var(--stroke);background:var(--glass-2);color:var(--fg);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s,box-shadow .25s;white-space:nowrap}
+.btn:hover,.btn:focus-visible{transform:scale(1.05);background:rgba(255,255,255,.2);box-shadow:0 0 0 4px rgba(255,255,255,.08)}
+.btn.solid{background:#fff;color:#141a3a;border-color:#fff}
+.btn.solid:hover,.btn.solid:focus-visible{background:#fff;box-shadow:0 0 30px rgba(255,255,255,.35)}
+.btn.sm{padding:9px 16px;font-size:15px}
+.btn svg{width:20px;height:20px;flex:none}
+:focus-visible{outline:2px solid var(--sky);outline-offset:3px}
+.pill{display:inline-flex;align-items:center;font-family:var(--display);font-weight:700;font-size:15px;padding:7px 14px;border-radius:12px;background:var(--sky);color:#0b1a33}
+.pill.amber{background:var(--amber);color:#2b1700}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1.02fr 1fr;gap:48px;align-items:center;padding-block:56px 80px}
+.hero-text{display:flex;flex-direction:column;gap:22px;min-width:0}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+.hero-note{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;color:var(--fg-2);font-size:15px}
+@media (max-width:920px){.hero{grid-template-columns:1fr;gap:36px;padding-block:28px 56px}}
+
+/* The TV mock: Glass home screen built in CSS */
+.tv{position:relative;aspect-ratio:16/10;max-width:100%;border-radius:22px;padding:10px;background:#07090f;
+  box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08);transform:perspective(1400px) rotateY(-9deg) rotateX(3deg);transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.tv:hover{transform:perspective(1400px) rotateY(-3deg) rotateX(1deg)}
+@media (max-width:920px){.tv{transform:none}.tv:hover{transform:none}}
+.screen{position:relative;height:100%;border-radius:14px;overflow:hidden;container-type:inline-size;
+  background:
+   radial-gradient(70% 80% at 15% 10%, #6a3a9a 0%, transparent 60%),
+   radial-gradient(60% 70% at 90% 30%, #c0603e 0%, transparent 60%),
+   radial-gradient(80% 80% at 50% 110%, #1b4b6b 0%, transparent 60%),
+   #2a1d4d}
+.screen::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.25))}
+.ui{position:absolute;inset:0;z-index:1;padding:4.5cqw 5cqw;display:flex;flex-direction:column;gap:2.8cqw;font-family:var(--display)}
+.ui-top{display:flex;align-items:center;gap:1.6cqw}
+.hello{font-size:3.2cqw;font-weight:600;margin-right:auto}
+.clock{padding:1cqw 2.4cqw;border-radius:2.2cqw;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);text-align:center;line-height:1}
+.clock b{display:block;font-weight:200;font-size:6cqw;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.clock small{display:block;font-size:1.5cqw;color:rgba(255,255,255,.75);margin-top:.6cqw}
+.dot{width:4.6cqw;height:4.6cqw;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);display:grid;place-items:center}
+.dot svg{width:2.4cqw;height:2.4cqw}
+.dot.on{background:#fff;color:#222}
+.shelf{border-radius:2.6cqw;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:2cqw 2.4cqw 2.6cqw}
+.shelf h4{margin:0 0 1.6cqw;font-size:1.9cqw;font-weight:500;color:rgba(255,255,255,.85)}
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:1.6cqw}
+.tile{aspect-ratio:16/10;border-radius:1.6cqw;display:grid;place-items:center;font-size:1.9cqw;font-weight:700;color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.tile.f{transform:scale(1.14);box-shadow:0 0 0 .35cqw #fff,0 1.4cqw 3cqw rgba(0,0,0,.35);z-index:1}
+.t1{background:linear-gradient(140deg,#ff5a5f,#c81d4e)}.t2{background:linear-gradient(140deg,#7b5cff,#4a2fd1)}.t3{background:linear-gradient(140deg,#2bc0e4,#1a7fb8)}
+.t4{background:linear-gradient(140deg,#ffb547,#e07a1f)}.t5{background:linear-gradient(140deg,#5ad19a,#1f9d6a)}
+.t6{background:rgba(255,255,255,.22)}.t7{background:linear-gradient(140deg,#f472b6,#a21caf)}.t8{background:linear-gradient(140deg,#94a3b8,#475569)}
+.t9{background:linear-gradient(140deg,#38bdf8,#1d4ed8)}.t10{background:rgba(255,255,255,.22)}
+.tv-cap{margin-top:14px;text-align:center;color:var(--fg-3);font-size:14px}
+
+/* Sections */
+section{padding-block:72px}
+.head{display:flex;flex-direction:column;gap:14px;margin-bottom:36px}
+.grid{display:grid;gap:16px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+@media (max-width:860px){.g3,.g2{grid-template-columns:1fr}}
+.card{padding:26px;border-radius:var(--r-m);display:flex;flex-direction:column;gap:10px;min-width:0}
+.card p{color:var(--fg-2)}
+.ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--glass-2);border:1px solid var(--stroke)}
+.ico svg{width:24px;height:24px;stroke:var(--fg);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Price list */
+.prices{padding:10px 30px;border-radius:var(--r-l)}
+.row{display:flex;align-items:baseline;gap:16px;padding-block:22px;border-bottom:1px solid rgba(255,255,255,.1)}
+.row:last-child{border-bottom:0}
+.row div{flex:1;min-width:0}
+.row h3{font-size:19px}
+.row p{color:var(--fg-2);font-size:15px;margin-top:4px}
+.price{font-family:var(--display);font-weight:700;font-size:22px;color:var(--sky);white-space:nowrap;font-variant-numeric:tabular-nums}
+.price small{font-size:15px;font-weight:500;color:var(--fg-3)}
+.fine{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px}
+.chip{padding:8px 14px;border-radius:999px;background:var(--glass);border:1px solid var(--stroke);font-size:14px;color:var(--fg-2)}
+@media (max-width:560px){.prices{padding:4px 20px}.row{flex-direction:column;gap:6px}}
+
+/* Examples */
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.shot{margin:0;border-radius:var(--r-m);overflow:hidden;position:relative;min-width:0}
+.shot{aspect-ratio:16/10;max-width:100%}
+.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.shot figcaption{position:absolute;left:12px;bottom:12px;right:12px;font-size:14px;font-weight:600;padding:8px 12px;border-radius:12px;background:rgba(11,16,38,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);width:fit-content;max-width:calc(100% - 24px)}
+.shot.wide{grid-column:1/-1;aspect-ratio:1335/702}
+.video{grid-column:1/-1;aspect-ratio:21/8;max-width:100%}
+.video{border-radius:var(--r-m);display:grid;place-items:center;text-align:center;padding:24px;
+  background:linear-gradient(135deg,rgba(64,46,134,.6),rgba(11,33,54,.6)),var(--glass)}
+.play{width:72px;height:72px;border-radius:50%;background:#fff;display:grid;place-items:center;margin:0 auto 14px;box-shadow:0 0 0 10px rgba(255,255,255,.12)}
+.play svg{width:28px;height:28px;margin-left:4px;fill:#141a3a}
+.video p{color:var(--fg-2);font-size:15px}
+@media (max-width:860px){.shots{grid-template-columns:1fr}.video{aspect-ratio:16/10}}
+
+/* Radio */
+.radio{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center;padding:40px;border-radius:32px;
+  background:linear-gradient(140deg,rgba(255,181,71,.12),rgba(64,46,134,.25) 55%),var(--glass)}
+.phone{width:260px;max-width:100%;border-radius:34px;padding:8px;background:#06070c;box-shadow:0 30px 60px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.1)}
+.phone img{display:block;border-radius:27px;width:100%}
+.radio .eyebrow{color:var(--amber)}
+.radio-body{display:flex;flex-direction:column;gap:18px;min-width:0}
+.ticks{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;color:var(--fg-2)}
+.ticks li{display:flex;gap:10px;align-items:flex-start}
+.ticks li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--amber);margin-top:9px}
+.tiers{display:flex;flex-wrap:wrap;gap:12px}
+.tier{padding:14px 18px;border-radius:var(--r-s);background:rgba(255,255,255,.08);border:1px solid var(--stroke);min-width:150px}
+.tier b{display:block;font-family:var(--display);font-size:24px;color:var(--amber)}
+.tier span{font-size:14px;color:var(--fg-2)}
+@media (max-width:860px){.radio{grid-template-columns:1fr;padding:24px;gap:28px}.phone{margin:0 auto;width:220px}.ticks{grid-template-columns:1fr}}
+
+/* Projects */
+.proj{padding:28px;border-radius:var(--r-l);display:flex;flex-direction:column;gap:14px}
+.proj .logo{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;font-size:30px;font-family:var(--display);font-weight:800}
+.l-home{background:linear-gradient(140deg,#5ad19a,#1f7a5a)}
+.l-stick{background:linear-gradient(140deg,#ffb547,#f472b6)}
+.proj p{color:var(--fg-2)}
+.proj .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:6px}
+
+/* Contact */
+.contact{text-align:center;padding:56px 28px;border-radius:36px;display:flex;flex-direction:column;align-items:center;gap:18px;
+  background:radial-gradient(80% 120% at 50% 0%,rgba(125,211,252,.18),transparent 60%),var(--glass)}
+.contact .lead{margin:0 auto}
+.steps{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:6px}
+footer{padding-block:40px 56px;color:var(--fg-3);font-size:14px;display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<div class="wrap top">
+  <div class="bar pane">
+    <a class="brand" href="#top" aria-label="Мастер Glass, наверх"><span class="mark"><i></i><i></i><i></i><i></i></span>Мастер Glass</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#uslugi">Услуги</a><a href="#glass">Glass</a><a href="#ceny">Цены</a><a href="#radio">Радио</a><a href="#proekty">Проекты</a>
+    </nav>
+    <a class="btn sm solid" href="#svyaz">Написать</a>
+  </div>
+</div>
+
+<main id="top">
+  <div class="wrap hero">
+    <div class="hero-text">
+      <span class="eyebrow">Пермь · настройка Smart TV</span>
+      <h1>Телевизор, которым приятно пользоваться</h1>
+      <p class="lead">Приеду, настрою телевизор или приставку и поставлю красивый главный экран Glass: крупные часы, нужные приложения под рукой, ничего лишнего.</p>
+      <div class="hero-cta">
+        <a class="btn solid" href="https://t.me/Stikmojibot?start=master" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2l-11 6.9-4.7-1.5c-1-.3-1-1 .2-1.5L20.6 3c.9-.3 1.6.2 1.3 1.3Z"/></svg>Написать в Telegram</a>
+        <a class="btn" href="https://max.ru/se14714971_1_bot" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 12a8 8 0 1 1 3.3 6.5L4 20l1.2-3.4A8 8 0 0 1 4 12Z"/></svg>Написать в MAX</a>
+      </div>
+      <div class="hero-note"><span class="pill">от 1500 ₽</span><span>Выезд по Перми бесплатно</span></div>
+    </div>
+    <div>
+      <div class="tv" aria-label="Так выглядит главный экран Glass на телевизоре">
+        <div class="screen">
+          <div class="ui">
+            <div class="ui-top">
+              <span class="hello" id="hello">Добрый день</span>
+              <div class="clock"><b id="clk">16:33</b><small id="dte">понедельник, 9 ноября</small></div>
+              <span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1" fill="#fff"/></svg></span>
+              <span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span>
+              <span class="dot on"><svg viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></span>
+            </div>
+            <div class="shelf"><h4>Избранное</h4>
+              <div class="tiles"><span class="tile t1">Кино</span><span class="tile t2 f">ТВ</span><span class="tile t3">Видео</span><span class="tile t4">Радио</span><span class="tile t5">Музыка</span></div>
+            </div>
+            <div class="shelf"><h4>Все приложения</h4>
+              <div class="tiles"><span class="tile t7">Мульты</span><span class="tile t8">Фото</span><span class="tile t9">Спорт</span><span class="tile t6">Браузер</span><span class="tile t10">Ещё</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="tv-cap">Главный экран Glass: так он выглядит на телевизоре</p>
+    </div>
+  </div>
+
+  <section id="uslugi">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Что я сделаю</span><h2>Один визит, и телевизор работает как надо</h2></div>
+      <div class="grid g3">
+        <div class="card pane"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="3"/><path d="M8 21h8M12 17v4"/></svg></span><h3>Удобный главный экран</h3><p>Часы, погода дня и нужные приложения сверху. Всё крупно и видно с дивана.</p></div>
+        <div class="card pane"><span class="ico"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></svg></span><h3>Уберу лишнее и рекламу</h3><p>Отключу ненужные приложения и рекламные ленты. Телевизор станет откликаться быстрее.</p></div>
+        <div class="card pane"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="m8 2 4 4 4-4"/></svg></span><h3>Кино, YouTube, ТВ-каналы</h3><p>Поставлю и настрою онлайн-кинотеатры, YouTube, каналы и радио.</p></div>
+        <div class="card pane"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span><h3>Таймер сна и ночной режим</h3><p>Телевизор сам выключится, если вы уснули. Ночью на экране только мягкие часы.</p></div>
+        <div class="card pane"><span class="ico"><svg viewBox="0 0 24 24"><path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/></svg></span><h3>Wi-Fi, пульт, обновления</h3><p>Подключу интернет, настрою пульт, обновлю систему.</p></div>
+        <div class="card pane"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><h3>Объясню без спешки</h3><p>Покажу, как всем пользоваться. Даже пожилым родственникам будет понятно.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="glass">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Главный экран Glass</span><h2>Моя разработка для Android TV</h2><p class="lead">Glass я сделал сам и ставлю его клиентам при настройке. Матовое стекло, плавное увеличение при наведении пультом, крупные часы. Обновляется сам.</p></div>
+      <div class="grid g3">
+        <div class="card pane"><h3>Разделы под вас</h3><p>«Избранное», «Детям», «Кино»: приложения разложены как удобно, а лишнее свёрнуто.</p></div>
+        <div class="card pane"><h3>Тема день и ночь</h3><p>Светлая днём, тёмная вечером, переключается сама. Восемь обоев или своё фото.</p></div>
+        <div class="card pane"><h3>Часы и будильник</h3><p>Заставка с часами, будильник по дням недели, выключение при бездействии.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="primery">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Примеры</span><h2>Как это выглядит вживую</h2></div>
+      <div class="shots">
+        <figure class="shot wide pane"><img src="img/tv-home.jpg" alt="Главный экран Glass: часы и избранные приложения" loading="lazy"><figcaption>Главный экран Glass: часы и любимые приложения</figcaption></figure>
+        <figure class="shot pane"><img src="img/tv-settings.jpg" alt="Меню настроек Glass на телевизоре" loading="lazy"><figcaption>Настройки Glass в одном меню</figcaption></figure>
+        <figure class="shot pane"><img src="img/tv-night.jpg" alt="Ночные часы Glass на тёмном экране" loading="lazy"><figcaption>Ночной режим: только часы</figcaption></figure>
+        <figure class="shot pane"><img src="img/tv-sections.jpg" alt="Свёрнутые разделы Избранное и Прочее" loading="lazy"><figcaption>Разделы сворачиваются</figcaption></figure>
+        <figure class="shot pane"><img src="img/tv-rename.jpg" alt="Переименование раздела с экранной клавиатуры" loading="lazy"><figcaption>Название раздела меняется с пульта</figcaption></figure>
+        <div class="video pane"><div><div class="play"><svg viewBox="0 0 24 24"><path d="M6 4v16l14-8Z"/></svg></div><h3>Видео скоро будет</h3><p>Покажу настройку от начала до конца</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ceny">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Цены</span><h2>Понятно и без сюрпризов</h2></div>
+      <div class="prices pane">
+        <div class="row"><div><h3>Настройка телевизора или приставки</h3><p>Главный экран Glass, приложения, Wi-Fi, таймер сна, объяснение</p></div><span class="price"><small>от</small> 1500 ₽</span></div>
+        <div class="row"><div><h3>Следующее устройство по тому же адресу</h3><p>Второй телевизор в спальне или на кухне</p></div><span class="price">800 ₽</span></div>
+        <div class="row"><div><h3>Подбор и настройка приставки «под ключ»</h3><p>Помогу выбрать модель под ваш телевизор и бюджет, потом всё настрою</p></div><span class="price"><small>от</small> 2500 ₽</span></div>
+      </div>
+      <div class="fine">
+        <span class="chip">Выезд по Перми бесплатно</span>
+        <span class="chip">Приставку покупаете сами, подскажу какую</span>
+        <span class="chip">Android TV, Google TV, Hyundai, Xiaomi, TCL, Haier, DEXP</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="radio">
+    <div class="wrap">
+      <div class="radio pane">
+        <div class="phone"><img src="img/radio-phone.jpg" alt="Glass Радио на телефоне: список популярных станций" loading="lazy"></div>
+        <div class="radio-body">
+          <span class="eyebrow">Glass Радио</span>
+          <h2>Радио для телевизора и телефона</h2>
+          <p class="lead">Тысячи станций без рекламы. Включите любимую волну на телевизоре или возьмите с собой в телефоне.</p>
+          <ul class="ticks">
+            <li>Избранное и поиск по станциям</li>
+            <li>Будильник любимой станцией</li>
+            <li>Таймер сна и ночной экран</li>
+            <li>Перенос избранного по QR</li>
+          </ul>
+          <div class="tiers">
+            <div class="tier"><b>199 ₽</b><span>Pro на 1 устройство</span></div>
+            <div class="tier"><b>399 ₽</b><span>Pro до 3 устройств</span></div>
+          </div>
+          <div class="hero-cta">
+            <a class="btn solid" href="https://kulema2k7-netizen.github.io/glass-radio-download/" target="_blank" rel="noopener">Скачать Glass Радио</a>
+            <a class="btn" href="https://t.me/Stikmojibot" target="_blank" rel="noopener">Купить Pro</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="proekty">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow">Наши проекты</span><h2>Ещё полезное от нас</h2></div>
+      <div class="grid g2">
+        <div class="proj pane">
+          <span class="logo l-stick">S</span>
+          <h3>Stickmoji</h3>
+          <p>Бот, который делает стикеры. Работает в Telegram и MAX. Через него же можно написать мне и купить Pro для радио.</p>
+          <div class="acts"><a class="btn sm" href="https://t.me/Stikmojibot" target="_blank" rel="noopener">Telegram</a><a class="btn sm" href="https://max.ru/se14714971_1_bot" target="_blank" rel="noopener">MAX</a></div>
+        </div>
+        <div class="proj pane">
+          <span class="logo l-home">Д</span>
+          <h3>Домовой</h3>
+          <p>Помощник арендодателя в MAX. Сам напоминает жильцам об оплате, собирает показания счётчиков и принимает заявки на ремонт с фото. Жильцу ничего устанавливать не нужно. Первый месяц бесплатно.</p>
+          <div class="acts"><a class="btn sm" href="https://max.ru/se14714971_bot" target="_blank" rel="noopener">Открыть в MAX</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="svyaz">
+    <div class="wrap">
+      <div class="contact pane">
+        <span class="eyebrow">Связаться</span>
+        <h2>Напишите, и я отвечу</h2>
+        <p class="lead">Пишите через бота Stickmoji: укажите модель телевизора и что нужно сделать. Сообщения после 22:00 читаю утром.</p>
+        <div class="hero-cta" style="justify-content:center">
+          <a class="btn solid" href="https://t.me/Stikmojibot?start=master" target="_blank" rel="noopener">Написать в Telegram</a>
+          <a class="btn" href="https://max.ru/se14714971_1_bot" target="_blank" rel="noopener">Написать в MAX</a>
+        </div>
+        <div class="steps"><span class="chip">1. Модель ТВ или приставки</span><span class="chip">2. Что нужно сделать</span><span class="chip">3. Район Перми</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap"><span>Мастер Glass · Евгений · Пермь</span><span>Glass и Glass Радио: наши разработки</span></footer>
+
+<script>
+(function(){
+  var D=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+  var M=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  function tick(){
+    var n=new Date(),h=n.getHours(),m=n.getMinutes();
+    document.getElementById('clk').textContent=h+':'+(m<10?'0':'')+m;
+    document.getElementById('dte').textContent=D[n.getDay()]+', '+n.getDate()+' '+M[n.getMonth()];
+    document.getElementById('hello').textContent=h<5?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер';
+  }
+  tick();setInterval(tick,10000);
+  // focus walks across tiles like a remote
+  var tiles=[].slice.call(document.querySelectorAll('.tile'));
+  if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    var i=1,order=[1,2,3,8,7,6];
+    setInterval(function(){tiles.forEach(function(t){t.classList.remove('f')});i=(i+1)%order.length;tiles[order[i]].classList.add('f')},1800);
+  }
+})();
+</script>
+
+</body>
+</html>
